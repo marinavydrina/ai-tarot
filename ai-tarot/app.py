@@ -14,17 +14,23 @@ TAROT_CARDS = [
 ]
 
 def interpret_tarot(card, question):
+    client = openai.OpenAI()  # новый клиент
     prompt = f"""
 You are a mystical tarot reader. A person asked: "{question}". 
 You drew the card "{card}". Explain the meaning of this card in the context of the question, using beautiful, poetic and intuitive language.
 """
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
+
+    response = client.chat.completions.create(
+        model="gpt-4o-2024-05-13",
+        messages=[
+            {"role": "system", "content": "You are an intuitive tarot reader."},
+            {"role": "user", "content": prompt}
+        ],
         temperature=0.9,
         max_tokens=500
     )
-    return response.choices[0].message["content"]
+
+    return response.choices[0].message.content
 
 app = Flask(__name__)
 
