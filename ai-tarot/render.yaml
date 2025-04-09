@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: ai-tarot
+    env: python
+    buildCommand: ""
+    startCommand: "gunicorn app:app"

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Таролог</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <h1>🔮 AI Таролог</h1>
+        <div id="chat-box"></div>
+        <form id="chat-form">
+            <input type="text" id="question" placeholder="Задай вопрос..." required>
+            <button type="submit">Спросить</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('chat-form');
+        const chatBox = document.getElementById('chat-box');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const questionInput = document.getElementById('question');
+            const question = questionInput.value;
+            questionInput.value = '';
+
+            chatBox.innerHTML += `<div class="user-msg"><strong>Ты:</strong> ${question}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question})
+            });
+
+            const data = await response.json();
+            const message = `
+                <div class="ai-msg">
+                    <strong>Карта:</strong> ${data.card}<br>
+                    <strong>Ответ:</strong> ${data.interpretation}
+                </div>
+            `;
+            chatBox.innerHTML += message;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>
